@@ -1,4 +1,4 @@
-#include <VFSPP/7zip.hpp>
+#include "VFSPP/7zip.hpp"
 
 extern "C"
 {

@@ -1,10 +1,9 @@
 
 #include <algorithm>
-#include <stdexcept>
-
-#include <VFSPP/system.hpp>
 
 #include <boost/filesystem/fstream.hpp>
+
+#include "VFSPP/system.hpp"
 
 namespace
 {

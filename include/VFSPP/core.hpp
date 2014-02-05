@@ -3,10 +3,10 @@
 #include <string>
 #include <vector>
 
-#include <VFSPP/defines.hpp>
-#include <vfspp_export.h>
-
 #include <boost/smart_ptr.hpp>
+
+#include "VFSPP/defines.hpp"
+#include "vfspp_export.h"
 
 namespace vfspp
 {

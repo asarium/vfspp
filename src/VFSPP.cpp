@@ -1,7 +1,7 @@
 
-#include <VFSPP/core.hpp>
-
 #include <boost/algorithm/string.hpp>
+
+#include "VFSPP/core.hpp"
 
 namespace vfspp
 {

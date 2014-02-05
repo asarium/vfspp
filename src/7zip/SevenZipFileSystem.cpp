@@ -1,6 +1,4 @@
 
-#include <VFSPP/7zip.hpp>
-
 extern "C"
 {
 #include <Types.h>
@@ -14,6 +12,8 @@ extern "C"
 #include <boost/foreach.hpp>
 
 #include <utf8.h>
+
+#include "VFSPP/7zip.hpp"
 
 using namespace vfspp;
 using namespace vfspp::sevenzip;

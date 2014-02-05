@@ -1,9 +1,8 @@
 
-#include <VFSPP/merged.hpp>
-
 #include <boost/algorithm/string.hpp>
-
 #include <boost/foreach.hpp>
+
+#include "VFSPP/merged.hpp"
 
 using namespace vfspp;
 using namespace vfspp::merged;

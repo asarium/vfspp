@@ -1,11 +1,11 @@
 #pragma once
 
-#include <vfspp_export.h>
-
-#include <VFSPP/defines.hpp>
-#include <VFSPP/core.hpp>
-
 #include <boost/filesystem.hpp>
+
+#include "vfspp_export.h"
+
+#include "VFSPP/defines.hpp"
+#include "VFSPP/core.hpp"
 
 namespace vfspp {
 	namespace system {

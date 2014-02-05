@@ -1,9 +1,9 @@
 #pragma once
 
-#include <vfspp_export.h>
+#include "vfspp_export.h"
 
-#include <VFSPP/defines.hpp>
-#include <VFSPP/core.hpp>
+#include "VFSPP/defines.hpp"
+#include "VFSPP/core.hpp"
 
 #include <boost/filesystem.hpp>
 #include <boost/unordered_map.hpp>
