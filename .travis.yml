@@ -1,0 +1,11 @@
+language: cpp
+compiler:
+  - gcc
+  - clang
+before:
+  - sudo apt-get install libboost-all-dev
+before_script:
+  - mkdir build
+  - cd build
+  - cmake -DVFSPP_BUILD_TESTS=ON ..
+script:  make
