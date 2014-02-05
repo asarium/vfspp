@@ -28,7 +28,7 @@ TEST(SevenZipFileEntryTest, FillChildren)
 {
 	SevenZipFileSystem fs(TEST_RESOURCE_DIR "/7z/7zip.7z");
 
-	std::vector<shared_ptr<IFileSystemEntry>> children;
+	std::vector<shared_ptr<IFileSystemEntry> > children;
 	{
 		IFileSystemEntry* rootDir = fs.getRootEntry();
 		rootDir->listChildren(children);

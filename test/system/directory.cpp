@@ -2,6 +2,8 @@
 #include <fstream>
 
 #include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
+
 #include <boost/foreach.hpp>
 #include <boost/smart_ptr.hpp>
 
@@ -40,7 +42,7 @@ TEST(PhysicalEntryTest, ListChildren)
 {
 	PhysicalFileSystem fs(TEST_RESOURCE_DIR "/system");
 
-	std::vector<shared_ptr<IFileSystemEntry>> children;
+	std::vector<shared_ptr<IFileSystemEntry> > children;
 	{
 		IFileSystemEntry* rootDir = fs.getRootEntry();
 		rootDir->listChildren(children);
@@ -111,7 +113,7 @@ TEST(PhysicalEntryTest, DeleteChild)
 
 		create_directories(testPath);
 
-		std::ofstream out(testFile.native());
+		boost::filesystem::ofstream out(testFile);
 		out << "Test" << std::endl;
 		out.close();
 
@@ -133,7 +135,7 @@ TEST(PhysicalEntryTest, DeleteChild)
 
 		create_directories(testPath);
 
-		std::ofstream out(testFile.native());
+		boost::filesystem::ofstream out(testFile.native());
 		out << "Test" << std::endl;
 		out.close();
 
