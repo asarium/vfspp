@@ -234,9 +234,11 @@ boost::shared_ptr<IFileSystemEntry> PhysicalEntry::createEntry(EntryType type, c
 			create_directories(createPath);
 			break;
 		}
+		default:
+			throw InvalidOperationException("Invalid type specified!");
 		}
 	}
-	else if (is_directory(createPath))
+	else
 	{
 		switch (type)
 		{
@@ -251,6 +253,8 @@ boost::shared_ptr<IFileSystemEntry> PhysicalEntry::createEntry(EntryType type, c
 			{
 				throw InvalidOperationException("Path exists but is no directory!");
 			}
+		default:
+			throw InvalidOperationException("Invalid type specified!");
 		}
 	}
 
