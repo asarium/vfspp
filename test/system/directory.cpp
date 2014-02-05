@@ -22,7 +22,7 @@ TEST(PhysicalEntryTest, NumChildren)
 	PhysicalFileSystem fs(TEST_RESOURCE_DIR "/system");
 
 	{
-		ASSERT_EQ(7, fs.getRootEntry()->numChildren());
+		ASSERT_EQ(5, fs.getRootEntry()->numChildren());
 	}
 	{
 		PhysicalEntry entry(&fs, "test1.txt");
@@ -45,11 +45,9 @@ TEST(PhysicalEntryTest, ListChildren)
 		IFileSystemEntry* rootDir = fs.getRootEntry();
 		rootDir->listChildren(children);
 
-		ASSERT_EQ(7, children.size());
+		ASSERT_EQ(5, children.size());
 
 		ASSERT_TRUE(vectorContainsEntry(children, "test1", DIRECTORY));
-		ASSERT_TRUE(vectorContainsEntry(children, "test2", DIRECTORY));
-		ASSERT_TRUE(vectorContainsEntry(children, "test3", DIRECTORY));
 
 		ASSERT_TRUE(vectorContainsEntry(children, "test1.txt", vfspp::FILE));
 		ASSERT_TRUE(vectorContainsEntry(children, "test2.txt", vfspp::FILE));
