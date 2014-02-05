@@ -277,16 +277,24 @@ boost::shared_ptr<std::streambuf> PhysicalEntry::open(int mode)
 
 	boost::shared_ptr<boost::filesystem::filebuf> buffer(new boost::filesystem::filebuf());
 
-	std::ios_base::openmode openmode = 0;
+	// Thank you gcc for not allowing me to assign 0 to openmode...
+	std::ios_base::openmode openmode;
 
-	if (mode & MODE_WRITE)
+	if ((mode & MODE_WRITE) == MODE_WRITE)
 	{
-		openmode |= std::ios::out;
+		openmode = std::ios::out;
 	}
-
-	if (mode & MODE_READ)
+	else if ((mode & MODE_READ) == MODE_READ)
 	{
-		openmode |= std::ios::in;
+		openmode = std::ios::in;
+	}
+	else if (mode & (MODE_READ | MODE_WRITE))
+	{
+		openmode = std::ios::in | std::ios::out;
+	}
+	else
+	{
+		throw InvalidOperationException("Invalid modes specified!");
 	}
 
 	buffer->open(entryPath, openmode);
