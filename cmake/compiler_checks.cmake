@@ -18,6 +18,8 @@ public:
 
 int main() {return 0;}
 	" HAS_CXX11_OVERRIDE)
+else(VFSPP_USECXX11)
+	set(HAS_CXX11_OVERRIDE FALSE)
 endif(VFSPP_USECXX11)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/compiler.h.in ${CMAKE_CURRENT_BINARY_DIR}/compiler.h)
