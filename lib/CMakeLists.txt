@@ -1,2 +1,4 @@
 
 add_subdirectory(7z)
+
+SET(UTF8_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/utf8 CACHE INTERNAL "")

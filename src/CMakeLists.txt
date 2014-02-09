@@ -2,10 +2,10 @@
 include(compiler_checks)
 
 SET(UTF8_HEADERS
-	"${VSFPP_INCLUDE_DIR}/utf8.h"
-	"${VSFPP_INCLUDE_DIR}/utf8/checked.h"
-	"${VSFPP_INCLUDE_DIR}/utf8/core.h"
-	"${VSFPP_INCLUDE_DIR}/utf8/unchecked.h"
+	"${UTF8_INCLUDE_DIR}/utf8.h"
+	"${UTF8_INCLUDE_DIR}/utf8/checked.h"
+	"${UTF8_INCLUDE_DIR}/utf8/core.h"
+	"${UTF8_INCLUDE_DIR}/utf8/unchecked.h"
 )
 
 SET(VFS_HEADERS
@@ -31,8 +31,6 @@ if (MSVC)
 	set_source_files_properties(VFSPP.cpp PROPERTIES COMPILE_DEFINITIONS "_SCL_SECURE_NO_WARNINGS")
 endif(MSVC)
 
-SET(INCLUDE_DIRS)
-
 source_group(System REGULAR_EXPRESSION system/.*)
 
 source_group(Merged REGULAR_EXPRESSION merged/.*)
@@ -51,8 +49,6 @@ if(VFSPP_7ZIP_SUPPORT)
 		7zip/SevenZipFileSystem.cpp
 		7zip/SevenZipFileEntry.cpp
 	)
-	
-	SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${7Z_INCLUDE_DIR})
 
 	source_group(7zip REGULAR_EXPRESSION 7zip/.*)
 	source_group(External\\7ZIP FILES ${7Z_SOURCES})
@@ -76,12 +72,11 @@ endif(VFSPP_BUILD_SHARED)
 ADD_LIBRARY(VFSPP ${LIB_TYPE} ${VFS_SRC} ${VFS_HEADERS})
 
 generate_export_header(VFSPP)
-
 	
-SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${VSFPP_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${Boost_INCLUDE_DIRS})
+SET(INCLUDE_DIRS ${VSFPP_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${Boost_INCLUDE_DIRS})
 set_target_properties(VFSPP
 	PROPERTIES
-		INCLUDE_DIRECTORIES "${INCLUDE_DIRS}"
+		INCLUDE_DIRECTORIES "${INCLUDE_DIRS};${UTF8_INCLUDE_DIR}"
 		INTERFACE_INCLUDE_DIRECTORIES "${INCLUDE_DIRS}"
 )
 
