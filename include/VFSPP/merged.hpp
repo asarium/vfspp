@@ -13,8 +13,6 @@ namespace vfspp
 		class VFSPP_EXPORT MergedEntry : public IFileSystemEntry
 		{
 		private:
-			MergedFileSystem* parentSystem;
-
 			boost::shared_ptr<IFileSystemEntry> containedEntry;
 
 			std::vector<boost::shared_ptr<MergedEntry> > cachedChildEntries;
@@ -48,7 +46,11 @@ namespace vfspp
 
 			virtual boost::shared_ptr<IFileSystemEntry> createEntry(EntryType type, const string_type& name) VFSPP_OVERRIDE;
 
+			virtual void rename(const string_type& newPath) VFSPP_OVERRIDE;
+
 			friend class MergedFileSystem;
+
+			MergedFileSystem* parentSystem;
 		};
 
 		class VFSPP_EXPORT MergedFileSystem : public IFileSystem

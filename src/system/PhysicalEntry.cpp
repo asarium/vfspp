@@ -3,6 +3,9 @@
 
 #include <boost/filesystem/fstream.hpp>
 
+#include <boost/iostreams/stream_buffer.hpp>
+#include <boost/iostreams/device/mapped_file.hpp>
+
 #include "VFSPP/system.hpp"
 
 namespace
@@ -263,6 +266,8 @@ boost::shared_ptr<IFileSystemEntry> PhysicalEntry::createEntry(EntryType type, c
 
 boost::shared_ptr<std::streambuf> PhysicalEntry::open(int mode)
 {
+	using namespace boost::iostreams;
+
 	if ((mode & MODE_WRITE) != 0 && (parentSystem->supportedOperations() & OP_WRITE) == 0)
 	{
 		throw InvalidOperationException("System does not support writing!");
@@ -277,8 +282,6 @@ boost::shared_ptr<std::streambuf> PhysicalEntry::open(int mode)
 	{
 		throw InvalidOperationException("Entry is no file!");
 	}
-
-	boost::shared_ptr<boost::filesystem::filebuf> buffer(new boost::filesystem::filebuf());
 
 	// Thank you gcc for not allowing me to assign 0 to openmode...
 	std::ios_base::openmode openmode;
@@ -300,14 +303,48 @@ boost::shared_ptr<std::streambuf> PhysicalEntry::open(int mode)
 		throw InvalidOperationException("Invalid modes specified!");
 	}
 
-	buffer->open(entryPath, openmode);
-
-	if (!buffer->is_open())
+	if (mode & MODE_MEMORY_MAPPED)
 	{
-		throw FileSystemException("Failed to open file!");
+		typedef stream_buffer<mapped_file> mapped_buffer;
+
+		basic_mapped_file_params<boost::filesystem::path> params(getEntryPath());
+		params.mode = openmode;
+
+		shared_ptr<mapped_buffer> buffer = shared_ptr<mapped_buffer>(new mapped_buffer(params));
+		if (!buffer->is_open())
+		{
+			throw FileSystemException("Failed to open memory mapped file!");
+		}
+		else
+		{
+			return buffer;
+		}
 	}
 	else
 	{
-		return buffer;
+		boost::shared_ptr<boost::filesystem::filebuf> buffer(new boost::filesystem::filebuf());
+
+		buffer->open(entryPath, openmode);
+
+		if (!buffer->is_open())
+		{
+			throw FileSystemException("Failed to open file!");
+		}
+		else
+		{
+			return buffer;
+		}
 	}
+}
+
+void PhysicalEntry::rename(const string_type& newName)
+{
+	if (!(parentSystem->supportedOperations() & (OP_DELETE | OP_CREATE)))
+	{
+		throw InvalidOperationException("Operations needed for renaming are not supported!");
+	}
+
+	filesystem::path newPath(parentSystem->getPhysicalRoot() / newName);
+
+	filesystem::rename(entryPath, newPath);
 }

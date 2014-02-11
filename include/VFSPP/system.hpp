@@ -39,6 +39,8 @@ namespace vfspp {
 
 			virtual boost::shared_ptr<IFileSystemEntry> createEntry(EntryType type, const string_type& name) VFSPP_OVERRIDE;
 
+			virtual void rename(const string_type& newPath) VFSPP_OVERRIDE;
+
 			friend class PhysicalFileSystem;
 		};
 

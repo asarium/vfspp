@@ -9,6 +9,27 @@ using namespace vfspp::merged;
 
 using namespace boost;
 
+namespace
+{
+	boost::shared_ptr<MergedEntry> getParent(MergedEntry* entry)
+	{
+		size_t slash = entry->getPath().find_last_of(DirectorySeparatorChar);
+
+		if (slash != string_type::npos)
+		{
+			string_type parentPath = entry->getPath();
+			parentPath.resize(slash);
+
+			return static_pointer_cast<MergedEntry>(entry->parentSystem->getRootEntry()->getChild(parentPath));
+		}
+		else
+		{
+			// return null for root
+			return shared_ptr<MergedEntry>();
+		}
+	}
+}
+
 typedef unordered_map<string_type, shared_ptr<MergedEntry> >::iterator ChildMapping;
 
 MergedEntry::MergedEntry(MergedFileSystem* parentSystem, shared_ptr<IFileSystemEntry> contained) :
@@ -212,6 +233,28 @@ bool MergedEntry::deleteChild(const string_type& name)
 		throw InvalidOperationException("Entry is no directory!");
 	}
 
+	string_type normalized = normalizePath(name);
+
+	// we want to delete the entry in the directory that actually contains it to keep
+	// recaching overhead as small as possible
+	size_t slash = normalized.find(DirectorySeparatorStr);
+	if (slash != string_type::npos)
+	{
+		// remove everything after the slash
+		normalized.resize(slash);
+
+		shared_ptr<IFileSystemEntry> entry = getEntryInternal(normalized);
+
+		if (entry)
+		{
+			return entry->deleteChild(name.substr(slash + 1, name.size() - 1));
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	bool success = false;
 	BOOST_FOREACH(shared_ptr<IFileSystem>& system, parentSystem->fileSystems)
 	{
@@ -275,4 +318,25 @@ boost::shared_ptr<IFileSystemEntry> MergedEntry::createEntry(EntryType type, con
 	}
 
 	return shared_ptr<IFileSystemEntry>();
+}
+
+void MergedEntry::rename(const string_type& newPath)
+{
+	if (isRoot())
+	{
+		throw FileSystemException("Cannot rename root!");
+	}
+
+	containedEntry->rename(newPath);
+
+	shared_ptr<MergedEntry> parent = getParent(this);
+
+	if (parent)
+	{
+		parent->dirty = true;
+	}
+	else
+	{
+		parentSystem->getRootEntry()->dirty = true;
+	}
 }

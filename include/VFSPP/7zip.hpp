@@ -44,6 +44,8 @@ namespace vfspp {
 			virtual bool deleteChild(const string_type& name) VFSPP_OVERRIDE;
 
 			virtual boost::shared_ptr<IFileSystemEntry> createEntry(EntryType type, const string_type& name) VFSPP_OVERRIDE;
+
+			virtual void rename(const string_type& newPath) VFSPP_OVERRIDE;
 		};
 
 		class VFSPP_EXPORT SevenZipFileSystem : public IFileSystem

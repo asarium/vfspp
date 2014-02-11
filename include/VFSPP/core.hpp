@@ -70,6 +70,7 @@ namespace vfspp
 		{
 			MODE_READ = 1 << 0,
 			MODE_WRITE = 1 << 1,
+			MODE_MEMORY_MAPPED = 1 << 2,
 		};
 
 	protected:
@@ -97,6 +98,8 @@ namespace vfspp
 		virtual bool deleteChild(const string_type& name) = 0;
 
 		virtual boost::shared_ptr<IFileSystemEntry> createEntry(EntryType type, const string_type& name) = 0;
+
+		virtual void rename(const string_type& newPath) = 0;
 	};
 
 	class VFSPP_EXPORT IFileSystem

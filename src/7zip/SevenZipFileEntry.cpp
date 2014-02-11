@@ -175,8 +175,18 @@ boost::shared_ptr<std::streambuf> SevenZipFileEntry::open(int mode)
 		throw InvalidOperationException("7-zip archives are read only!");
 	}
 
+	if (mode & MODE_MEMORY_MAPPED)
+	{
+		throw FileSystemException("7-zip entries can't be memory mapped!");
+	}
+
 	size_t size;
 	shared_array<char> data = parentSystem->extractEntry(path, size);
 
 	return shared_ptr<std::streambuf>(new MemoryBuffer(data, size));
+}
+
+void SevenZipFileEntry::rename(const string_type& newPath)
+{
+	throw InvalidOperationException("7-zip archives are read-only!");
 }
