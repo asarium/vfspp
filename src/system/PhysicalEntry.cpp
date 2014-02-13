@@ -340,3 +340,8 @@ void PhysicalEntry::rename(const string_type& newName)
 
 	filesystem::rename(entryPath, newPath);
 }
+
+time_t PhysicalEntry::lastWriteTime()
+{
+	return last_write_time(entryPath);
+}

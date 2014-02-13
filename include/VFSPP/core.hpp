@@ -117,6 +117,8 @@ namespace vfspp
 		virtual FileEntryPointer createEntry(EntryType type, const string_type& name) = 0;
 
 		virtual void rename(const string_type& newPath) = 0;
+
+		virtual time_t lastWriteTime() = 0;
 	};
 
 	class VFSPP_EXPORT IFileSystem

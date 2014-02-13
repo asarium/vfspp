@@ -41,6 +41,8 @@ namespace vfspp {
 
 			virtual void rename(const string_type& newPath) VFSPP_OVERRIDE;
 
+			virtual time_t lastWriteTime() VFSPP_OVERRIDE;
+
 			friend class PhysicalFileSystem;
 		};
 

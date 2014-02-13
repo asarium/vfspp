@@ -46,6 +46,8 @@ namespace vfspp {
 			virtual FileEntryPointer createEntry(EntryType type, const string_type& name) VFSPP_OVERRIDE;
 
 			virtual void rename(const string_type& newPath) VFSPP_OVERRIDE;
+
+			virtual time_t lastWriteTime() VFSPP_OVERRIDE;
 		};
 
 		class VFSPP_EXPORT SevenZipFileSystem : public IFileSystem
@@ -57,6 +59,7 @@ namespace vfspp {
 				size_t index;
 				UInt64 size;
 				UInt32 crc;
+				time_t write_time;
 
 				UInt64 unpackedSize;
 				UInt64 packedSize;

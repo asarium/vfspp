@@ -357,3 +357,8 @@ void MergedEntry::rename(const string_type& newPath)
 		parentSystem->getRootEntry()->dirty = true;
 	}
 }
+
+time_t MergedEntry::lastWriteTime()
+{
+	return containedEntry->lastWriteTime();
+}

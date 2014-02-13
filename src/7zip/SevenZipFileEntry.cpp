@@ -190,3 +190,17 @@ void SevenZipFileEntry::rename(const string_type& newPath)
 {
 	throw InvalidOperationException("7-zip archives are read-only!");
 }
+
+time_t SevenZipFileEntry::lastWriteTime()
+{
+	boost::unordered_map<string_type, int>::const_iterator iter = parentSystem->fileIndexes.find(path);
+
+	if (iter == parentSystem->fileIndexes.end())
+	{
+		return 0;
+	}
+	else
+	{
+		return parentSystem->fileData[iter->second].write_time;
+	}
+}
