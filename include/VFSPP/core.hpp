@@ -33,6 +33,8 @@ namespace vfspp
 		return outPath;
 	}
 
+	string_type normalizePath(const char* inPath);
+
 	int modeToOperation(int mode);
 
 	enum EntryType

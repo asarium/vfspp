@@ -24,4 +24,15 @@ namespace vfspp
 
 		return out;
 	}
+
+	string_type normalizePath(const char* inPath)
+	{
+		string_type outPath(inPath);
+
+		boost::trim(outPath);
+
+		boost::trim_if(outPath, boost::is_any_of(DirectorySeparatorStr));
+
+		return outPath;
+	}
 }
