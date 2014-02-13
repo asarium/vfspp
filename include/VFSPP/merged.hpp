@@ -28,15 +28,15 @@ namespace vfspp
 			void addChildren(IFileSystemEntry* entry);
 
 		public:
-			MergedEntry(MergedFileSystem* parentSystem, boost::shared_ptr<IFileSystemEntry> mergedEntry);
+			MergedEntry(MergedFileSystem* parentSystem, FileEntryPointer mergedEntry);
 
 			virtual ~MergedEntry() {}
 
-			virtual boost::shared_ptr<IFileSystemEntry> getChild(const string_type& path) VFSPP_OVERRIDE;
+			virtual FileEntryPointer getChild(const string_type& path) VFSPP_OVERRIDE;
 
 			virtual size_t numChildren() VFSPP_OVERRIDE;
 
-			virtual void listChildren(std::vector<boost::shared_ptr<IFileSystemEntry> >& outVector) VFSPP_OVERRIDE;
+			virtual void listChildren(std::vector<FileEntryPointer>& outVector) VFSPP_OVERRIDE;
 
 			virtual boost::shared_ptr<std::streambuf> open(int mode = MODE_READ) VFSPP_OVERRIDE;
 
@@ -44,7 +44,7 @@ namespace vfspp
 
 			virtual bool deleteChild(const string_type& name) VFSPP_OVERRIDE;
 
-			virtual boost::shared_ptr<IFileSystemEntry> createEntry(EntryType type, const string_type& name) VFSPP_OVERRIDE;
+			virtual FileEntryPointer createEntry(EntryType type, const string_type& name) VFSPP_OVERRIDE;
 
 			virtual void rename(const string_type& newPath) VFSPP_OVERRIDE;
 

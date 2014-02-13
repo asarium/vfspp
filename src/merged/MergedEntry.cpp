@@ -32,7 +32,7 @@ namespace
 
 typedef unordered_map<string_type, shared_ptr<MergedEntry> >::iterator ChildMapping;
 
-MergedEntry::MergedEntry(MergedFileSystem* parentSystem, shared_ptr<IFileSystemEntry> contained) :
+MergedEntry::MergedEntry(MergedFileSystem* parentSystem, FileEntryPointer contained) :
 IFileSystemEntry(contained ? contained->getPath() : ""), parentSystem(parentSystem), containedEntry(contained),
 dirty(true)
 {
@@ -45,18 +45,30 @@ void MergedEntry::addChildren(IFileSystemEntry* entry)
 		return;
 	}
 
-	std::vector<shared_ptr<IFileSystemEntry> > entries;
+	std::vector<FileEntryPointer> entries;
 
 	entry->listChildren(entries);
 
-	BOOST_FOREACH(shared_ptr<IFileSystemEntry>& childEntry, entries)
+	BOOST_FOREACH(FileEntryPointer& childEntry, entries)
 	{
-		if (cachedChildMapping.find(childEntry->getPath()) == cachedChildMapping.end())
+		string_type entryName = childEntry->getPath();
+		if (!isRoot())
+		{
+			entryName = normalizePath(entryName.substr(path.size()));
+		}
+		size_t slash = entryName.find_first_of(DirectorySeparatorChar);
+
+		if (slash != string_type::npos)
+		{
+			entryName.resize(slash);
+		}
+
+		if (cachedChildMapping.find(entryName) == cachedChildMapping.end())
 		{
 			// This entry hasn't been found yet
 			shared_ptr<MergedEntry> newEntry(new MergedEntry(parentSystem, childEntry));
 
-			cachedChildMapping.insert(std::make_pair(childEntry->getPath(), newEntry));
+			cachedChildMapping.insert(std::make_pair(entryName, newEntry));
 			cachedChildEntries.push_back(newEntry);
 		}
 	}
@@ -77,7 +89,7 @@ void MergedEntry::cacheChildren()
 			}
 			else
 			{
-				shared_ptr<IFileSystemEntry> entry = system->getRootEntry()->getChild(path);
+				FileEntryPointer entry = system->getRootEntry()->getChild(path);
 
 				if (entry)
 				{
@@ -92,6 +104,11 @@ void MergedEntry::cacheChildren()
 
 boost::shared_ptr<MergedEntry> MergedEntry::getEntryInternal(const string_type& path)
 {
+	if (dirty)
+	{
+		cacheChildren();
+	}
+
 	size_t separator = path.find_first_of(DirectorySeparatorChar);
 
 	if (separator == string_type::npos)
@@ -118,7 +135,7 @@ boost::shared_ptr<MergedEntry> MergedEntry::getEntryInternal(const string_type& 
 	return shared_ptr<MergedEntry>();
 }
 
-boost::shared_ptr<IFileSystemEntry> MergedEntry::getChild(const string_type& path)
+FileEntryPointer MergedEntry::getChild(const string_type& path)
 {
 	if (getType() != DIRECTORY)
 	{
@@ -148,7 +165,7 @@ size_t MergedEntry::numChildren()
 	return cachedChildEntries.size();
 }
 
-void MergedEntry::listChildren(std::vector<boost::shared_ptr<IFileSystemEntry> >& outVector)
+void MergedEntry::listChildren(std::vector<FileEntryPointer>& outVector)
 {
 	if (getType() != DIRECTORY)
 	{
@@ -243,7 +260,7 @@ bool MergedEntry::deleteChild(const string_type& name)
 		// remove everything after the slash
 		normalized.resize(slash);
 
-		shared_ptr<IFileSystemEntry> entry = getEntryInternal(normalized);
+		FileEntryPointer entry = getEntryInternal(normalized);
 
 		if (entry)
 		{
@@ -260,7 +277,7 @@ bool MergedEntry::deleteChild(const string_type& name)
 	{
 		if (system->supportedOperations() & OP_DELETE)
 		{
-			shared_ptr<IFileSystemEntry> entry = system->getRootEntry()->getChild(path);
+			FileEntryPointer entry = system->getRootEntry()->getChild(path);
 
 			if (entry && entry->getType() == DIRECTORY)
 			{
@@ -279,7 +296,7 @@ bool MergedEntry::deleteChild(const string_type& name)
 	return success;
 }
 
-boost::shared_ptr<IFileSystemEntry> MergedEntry::createEntry(EntryType type, const string_type& name)
+FileEntryPointer MergedEntry::createEntry(EntryType type, const string_type& name)
 {
 	if (!(parentSystem->supportedOperations() & OP_CREATE))
 	{
@@ -295,13 +312,13 @@ boost::shared_ptr<IFileSystemEntry> MergedEntry::createEntry(EntryType type, con
 	{
 		if (system->supportedOperations() & OP_CREATE)
 		{
-			shared_ptr<IFileSystemEntry> entry = system->getRootEntry()->getChild(path);
+			FileEntryPointer entry = system->getRootEntry()->getChild(path);
 
 			if (entry && entry->getType() == DIRECTORY)
 			{
 				try
 				{
-					shared_ptr<IFileSystemEntry> newEntry = entry->createEntry(type, name);
+					FileEntryPointer newEntry = entry->createEntry(type, name);
 
 					if (newEntry)
 					{
@@ -317,7 +334,7 @@ boost::shared_ptr<IFileSystemEntry> MergedEntry::createEntry(EntryType type, con
 		}
 	}
 
-	return shared_ptr<IFileSystemEntry>();
+	return FileEntryPointer();
 }
 
 void MergedEntry::rename(const string_type& newPath)

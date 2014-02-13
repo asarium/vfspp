@@ -36,7 +36,7 @@ SevenZipFileEntry::SevenZipFileEntry(SevenZipFileSystem* parentSystem, const str
 {
 }
 
-shared_ptr<IFileSystemEntry> SevenZipFileEntry::getChild(const string_type& path)
+FileEntryPointer SevenZipFileEntry::getChild(const string_type& path)
 {
 	if (getType() != DIRECTORY)
 	{
@@ -49,11 +49,11 @@ shared_ptr<IFileSystemEntry> SevenZipFileEntry::getChild(const string_type& path
 
 	if (type == UNKNOWN)
 	{
-		return shared_ptr<SevenZipFileEntry>();
+		return FileEntryPointer();
 	}
 	else
 	{
-		return shared_ptr<SevenZipFileEntry>(new SevenZipFileEntry(parentSystem, childPath));
+		return FileEntryPointer(new SevenZipFileEntry(parentSystem, childPath));
 	}
 }
 
@@ -93,7 +93,7 @@ size_t SevenZipFileEntry::numChildren()
 	return num;
 }
 
-void SevenZipFileEntry::listChildren(std::vector<boost::shared_ptr<IFileSystemEntry> >& outVector)
+void SevenZipFileEntry::listChildren(std::vector<FileEntryPointer>& outVector)
 {
 	if (getType() != DIRECTORY)
 	{
@@ -114,14 +114,14 @@ void SevenZipFileEntry::listChildren(std::vector<boost::shared_ptr<IFileSystemEn
 				// Couldn't find separator, it's a child if we are the root
 				if (path.length() == 0)
 				{
-					outVector.push_back(shared_ptr<IFileSystemEntry>(new SevenZipFileEntry(parentSystem, data.name)));
+					outVector.push_back(FileEntryPointer(new SevenZipFileEntry(parentSystem, data.name)));
 				}
 			}
 			else
 			{
 				if (pos == path.length())
 				{
-					outVector.push_back(shared_ptr<IFileSystemEntry>(new SevenZipFileEntry(parentSystem, data.name)));
+					outVector.push_back(FileEntryPointer(new SevenZipFileEntry(parentSystem, data.name)));
 				}
 			}
 		}
@@ -158,7 +158,7 @@ bool SevenZipFileEntry::deleteChild(const string_type& name)
 	throw InvalidOperationException("7-zip archives are read only!");
 }
 
-boost::shared_ptr<IFileSystemEntry> SevenZipFileEntry::createEntry(EntryType type, const string_type& name)
+FileEntryPointer SevenZipFileEntry::createEntry(EntryType type, const string_type& name)
 {
 	throw InvalidOperationException("7-zip archives are read only!");
 }

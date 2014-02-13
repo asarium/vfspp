@@ -86,7 +86,7 @@ size_t PhysicalEntry::numChildren()
 	return std::distance(directory_iterator(entryPath), directory_iterator());
 }
 
-boost::shared_ptr<IFileSystemEntry> PhysicalEntry::getChild(const string_type& path)
+FileEntryPointer PhysicalEntry::getChild(const string_type& path)
 {
 	if (getType() != DIRECTORY)
 	{
@@ -97,15 +97,15 @@ boost::shared_ptr<IFileSystemEntry> PhysicalEntry::getChild(const string_type& p
 
 	if (exists(childPath))
 	{
-		return boost::shared_ptr<IFileSystemEntry>(new PhysicalEntry(parentSystem, path));
+		return FileEntryPointer(new PhysicalEntry(parentSystem, path));
 	}
 	else
 	{
-		return boost::shared_ptr<IFileSystemEntry>();
+		return FileEntryPointer();
 	}
 }
 
-void PhysicalEntry::listChildren(std::vector<boost::shared_ptr<IFileSystemEntry> >& outVector)
+void PhysicalEntry::listChildren(std::vector<FileEntryPointer>& outVector)
 {
 	if ((parentSystem->supportedOperations() & OP_READ) == 0)
 	{
@@ -125,7 +125,7 @@ void PhysicalEntry::listChildren(std::vector<boost::shared_ptr<IFileSystemEntry>
 	{
 		boost::filesystem::path relativ = uncomplete(parentSystem->getPhysicalRoot(), iter->path());
 
-		outVector.push_back(boost::shared_ptr<IFileSystemEntry>(new PhysicalEntry(parentSystem, relativ.generic_string())));
+		outVector.push_back(FileEntryPointer(new PhysicalEntry(parentSystem, relativ.generic_string())));
 	}
 }
 
@@ -196,7 +196,7 @@ bool PhysicalEntry::deleteChild(const string_type& name)
 	}
 }
 
-boost::shared_ptr<IFileSystemEntry> PhysicalEntry::createEntry(EntryType type, const string_type& name)
+FileEntryPointer PhysicalEntry::createEntry(EntryType type, const string_type& name)
 {
 	if ((parentSystem->supportedOperations() & OP_CREATE) == 0)
 	{
@@ -261,7 +261,7 @@ boost::shared_ptr<IFileSystemEntry> PhysicalEntry::createEntry(EntryType type, c
 		}
 	}
 
-	return boost::shared_ptr<IFileSystemEntry>(new PhysicalEntry(parentSystem, name));
+	return FileEntryPointer(new PhysicalEntry(parentSystem, name));
 }
 
 boost::shared_ptr<std::streambuf> PhysicalEntry::open(int mode)
@@ -283,24 +283,16 @@ boost::shared_ptr<std::streambuf> PhysicalEntry::open(int mode)
 		throw InvalidOperationException("Entry is no file!");
 	}
 
-	// Thank you gcc for not allowing me to assign 0 to openmode...
-	std::ios_base::openmode openmode;
+	std::ios_base::openmode openmode = std::ios::binary;
 
-	if ((mode & MODE_WRITE) == MODE_WRITE)
+	if (mode & MODE_WRITE)
 	{
-		openmode = std::ios::out;
+		openmode = openmode | std::ios::out;
 	}
-	else if ((mode & MODE_READ) == MODE_READ)
+	
+	if (mode & MODE_READ)
 	{
-		openmode = std::ios::in;
-	}
-	else if (mode & (MODE_READ | MODE_WRITE))
-	{
-		openmode = std::ios::in | std::ios::out;
-	}
-	else
-	{
-		throw InvalidOperationException("Invalid modes specified!");
+		openmode = openmode | std::ios::in;
 	}
 
 	if (mode & MODE_MEMORY_MAPPED)

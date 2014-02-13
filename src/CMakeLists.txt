@@ -26,11 +26,6 @@ SET(VFS_SRC
 	merged/MergedFileSystem.cpp
 )
 
-# Stupid MSVC with your unfixable warnings...
-if (MSVC)
-	set_source_files_properties(VFSPP.cpp PROPERTIES COMPILE_DEFINITIONS "_SCL_SECURE_NO_WARNINGS")
-endif(MSVC)
-
 source_group(System REGULAR_EXPRESSION system/.*)
 
 source_group(Merged REGULAR_EXPRESSION merged/.*)
@@ -57,7 +52,6 @@ endif(VFSPP_7ZIP_SUPPORT)
 SET(Boost_USE_STATIC_LIBS ON)
 
 find_package(Boost COMPONENTS filesystem system iostreams REQUIRED)
-ADD_DEFINITIONS(-DBOOST_ALL_NO_LIB)
 
 include(GenerateExportHeader)
 
@@ -72,7 +66,7 @@ endif(VFSPP_BUILD_SHARED)
 ADD_LIBRARY(VFSPP ${LIB_TYPE} ${VFS_SRC} ${VFS_HEADERS})
 
 generate_export_header(VFSPP)
-	
+
 SET(INCLUDE_DIRS ${VSFPP_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${Boost_INCLUDE_DIRS})
 set_target_properties(VFSPP
 	PROPERTIES
@@ -82,12 +76,17 @@ set_target_properties(VFSPP
 
 SET(COMPILE_DEFS BOOST_ALL_NO_LIB)
 IF(NOT VFSPP_BUILD_SHARED)
-	ADD_DEFINITIONS(-DVFSPP_STATIC_DEFINE)
 	SET(COMPILE_DEFS ${COMPILE_DEFS} VFSPP_STATIC_DEFINE)
 ENDIF(NOT VFSPP_BUILD_SHARED)
 
+IF(MSVC)
+	# Stupid MSVC with your unfixable warnings...
+	SET(COMPILE_DEFS ${COMPILE_DEFS} _SCL_SECURE_NO_WARNINGS)
+ENDIF(MSVC)
+
 set_target_properties(VFSPP
 	PROPERTIES
+		COMPILE_DEFINITIONS "${COMPILE_DEFS}"
 		INTERFACE_COMPILE_DEFINITIONS "${COMPILE_DEFS}"
 )
 

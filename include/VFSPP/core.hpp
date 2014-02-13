@@ -4,19 +4,34 @@
 #include <vector>
 
 #include <boost/smart_ptr.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "VFSPP/defines.hpp"
 #include "vfspp_export.h"
 
 namespace vfspp
 {
+	class IFileSystemEntry;
+
 	typedef std::string string_type;
+
+	typedef boost::shared_ptr<IFileSystemEntry> FileEntryPointer;
 
 	const char DirectorySeparatorChar = '/';
 
 	const char * const DirectorySeparatorStr = "/";
 
-	string_type normalizePath(const string_type& inPath);
+	template<class T>
+	T normalizePath(const T& inPath)
+	{
+		T outPath(inPath);
+
+		boost::trim(outPath);
+
+		boost::trim_if(outPath, boost::is_any_of(DirectorySeparatorStr));
+
+		return outPath;
+	}
 
 	int modeToOperation(int mode);
 
@@ -85,11 +100,11 @@ namespace vfspp
 
 		const string_type& getPath() const { return path; }
 
-		virtual boost::shared_ptr<IFileSystemEntry> getChild(const string_type& path) = 0;
+		virtual FileEntryPointer getChild(const string_type& path) = 0;
 
 		virtual size_t numChildren() = 0;
 
-		virtual void listChildren(std::vector<boost::shared_ptr<IFileSystemEntry> >& outVector) = 0;
+		virtual void listChildren(std::vector<FileEntryPointer>& outVector) = 0;
 
 		virtual boost::shared_ptr<std::streambuf> open(int mode = MODE_READ) = 0;
 
@@ -97,7 +112,7 @@ namespace vfspp
 
 		virtual bool deleteChild(const string_type& name) = 0;
 
-		virtual boost::shared_ptr<IFileSystemEntry> createEntry(EntryType type, const string_type& name) = 0;
+		virtual FileEntryPointer createEntry(EntryType type, const string_type& name) = 0;
 
 		virtual void rename(const string_type& newPath) = 0;
 	};
