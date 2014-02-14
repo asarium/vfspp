@@ -134,15 +134,15 @@ SevenZipFileSystem::SevenZipFileSystem(const string_type& path) :
 
 		if (f->MTimeDefined)
 		{
-			// From boost, seems to works although I don't know why...
-			__int64 t = (static_cast<__int64>(f->MTime.High) << 32) + f->MTime.Low;
+			// From boost, seems to work although I don't know why...
+			time_t t = (static_cast<time_t>(f->MTime.High) << 32) + f->MTime.Low;
 #   if !defined(_MSC_VER) || _MSC_VER > 1300 // > VC++ 7.0
 			t -= 116444736000000000LL;
 #   else
 			t -= 116444736000000000;
 #   endif
 			t /= 10000000;
-			fd.write_time =  static_cast<std::time_t>(t);
+			fd.write_time =  t;
 		}
 		else
 		{
