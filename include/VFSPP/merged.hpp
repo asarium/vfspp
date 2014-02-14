@@ -62,6 +62,8 @@ namespace vfspp
 
 			boost::scoped_ptr<MergedEntry> rootEntry;
 
+			bool caseInsensitive;
+
 			void populateChildren(MergedEntry* entry, int levels);
 
 		public:
@@ -76,6 +78,8 @@ namespace vfspp
 			virtual int supportedOperations() const VFSPP_OVERRIDE;
 
 			void populateEntries(int levels = 2);
+
+			void setCaseInsensitive(bool b) { caseInsensitive = b; }
 
 			friend class MergedEntry;
 		};

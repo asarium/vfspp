@@ -22,13 +22,18 @@ namespace vfspp
 	const char * const DirectorySeparatorStr = "/";
 
 	template<class T>
-	T normalizePath(const T& inPath)
+	T normalizePath(const T& inPath, bool lowerCase = false)
 	{
 		T outPath(inPath);
 
 		boost::trim(outPath);
 
 		boost::trim_if(outPath, boost::is_any_of(DirectorySeparatorStr));
+
+		if (lowerCase)
+		{
+			boost::to_lower(outPath);
+		}
 
 		return outPath;
 	}

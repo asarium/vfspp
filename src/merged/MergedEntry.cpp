@@ -51,7 +51,7 @@ void MergedEntry::addChildren(IFileSystemEntry* entry)
 
 	BOOST_FOREACH(FileEntryPointer& childEntry, entries)
 	{
-		string_type entryName = childEntry->getPath();
+		string_type entryName = normalizePath(childEntry->getPath(), parentSystem->caseInsensitive);
 		if (!isRoot())
 		{
 			entryName = normalizePath(entryName.substr(path.size()));
@@ -142,12 +142,7 @@ FileEntryPointer MergedEntry::getChild(const string_type& path)
 		throw InvalidOperationException("Entry is no directory!");
 	}
 
-	if (dirty)
-	{
-		cacheChildren();
-	}
-
-	return getEntryInternal(normalizePath(path));
+	return getEntryInternal(normalizePath(path, parentSystem->caseInsensitive));
 }
 
 size_t MergedEntry::numChildren()
