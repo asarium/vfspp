@@ -191,6 +191,16 @@ boost::shared_ptr<std::streambuf> MergedEntry::open(int mode)
 		throw InvalidOperationException("Entry is no file!");
 	}
 
+	try
+	{
+		// First try to open the contained entry
+		return containedEntry->open(mode);
+	}
+	catch (...)
+	{
+		// If that fails try to open a file of another filesystem
+	}
+
 	BOOST_FOREACH(shared_ptr<IFileSystem>& system, parentSystem->fileSystems)
 	{
 		if (system->supportedOperations() & ops)
