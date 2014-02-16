@@ -56,7 +56,7 @@ namespace
 	}
 }
 
-SevenZipFileSystem::SevenZipFileSystem(const string_type& path) :
+SevenZipFileSystem::SevenZipFileSystem(const boost::filesystem::path& path) :
 	filePath(path),
 	tempBuf(NULL),
 	tempBufSize(0),
@@ -76,7 +76,7 @@ SevenZipFileSystem::SevenZipFileSystem(const string_type& path) :
 
 	SzArEx_Init(&db);
 
-	WRes wres = InFile_Open(&archiveStream.file, path.c_str());
+	WRes wres = InFile_Open(&archiveStream.file, path.string().c_str());
 	if (wres)
 	{
 		boost::system::error_code e(wres, boost::system::get_system_category());

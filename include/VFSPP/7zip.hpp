@@ -70,7 +70,7 @@ namespace vfspp {
 			std::vector<FileData> fileData;
 			boost::unordered_map<string_type, int> fileIndexes;
 
-			string_type filePath;
+			boost::filesystem::path filePath;
 
 			// Extract variables
 			UInt32 blockIndex;
@@ -97,7 +97,7 @@ namespace vfspp {
 			friend class SevenZipFileEntry;
 
 		public:
-			SevenZipFileSystem(const string_type& filePath);
+			SevenZipFileSystem(const boost::filesystem::path& filePath);
 
 			virtual ~SevenZipFileSystem();
 
