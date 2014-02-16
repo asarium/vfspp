@@ -28,7 +28,7 @@ namespace
 		boost::shared_array<Ch> dataPtr;
 
 	public:
-		MemoryBuffer(shared_array<Ch> data, size_t n) : dataPtr(data), basic_array(data.get(), n)
+		MemoryBuffer(shared_array<Ch> data, size_t n) : dataPtr(data), boost::iostreams::basic_array(data.get(), n)
 		{
 		}
 	};
