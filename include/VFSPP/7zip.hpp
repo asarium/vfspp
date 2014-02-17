@@ -4,6 +4,7 @@
 
 #include "VFSPP/defines.hpp"
 #include "VFSPP/core.hpp"
+#include "VFSPP/util.hpp"
 
 #include <boost/filesystem.hpp>
 #include <boost/unordered_map.hpp>
@@ -50,25 +51,23 @@ namespace vfspp {
 			virtual time_t lastWriteTime() VFSPP_OVERRIDE;
 		};
 
-		class VFSPP_EXPORT SevenZipFileSystem : public IFileSystem
+		struct SevenZipFileData
+		{
+			string_type name;
+			size_t index;
+			UInt64 size;
+			UInt32 crc;
+			time_t write_time;
+
+			UInt64 unpackedSize;
+			UInt64 packedSize;
+
+			EntryType type;
+		};
+
+		class VFSPP_EXPORT SevenZipFileSystem : public util::ArchiveFileSystem<SevenZipFileData>
 		{
 		private:
-			struct FileData
-			{
-				string_type name;
-				size_t index;
-				UInt64 size;
-				UInt32 crc;
-				time_t write_time;
-
-				UInt64 unpackedSize;
-				UInt64 packedSize;
-
-				EntryType type;
-			};
-
-			std::vector<FileData> fileData;
-			boost::unordered_map<string_type, int> fileIndexes;
 
 			boost::filesystem::path filePath;
 

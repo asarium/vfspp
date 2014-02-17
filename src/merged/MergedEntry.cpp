@@ -3,6 +3,7 @@
 #include <boost/foreach.hpp>
 
 #include "VFSPP/merged.hpp"
+#include "VFSPP/util.hpp"
 
 using namespace vfspp;
 using namespace vfspp::merged;
@@ -51,10 +52,10 @@ void MergedEntry::addChildren(IFileSystemEntry* entry)
 
 	BOOST_FOREACH(FileEntryPointer& childEntry, entries)
 	{
-		string_type entryName = normalizePath(childEntry->getPath(), parentSystem->caseInsensitive);
+		string_type entryName = util::normalizePath(childEntry->getPath(), parentSystem->caseInsensitive);
 		if (!isRoot())
 		{
-			entryName = normalizePath(entryName.substr(path.size()));
+			entryName = util::normalizePath(entryName.substr(path.size()));
 		}
 		size_t slash = entryName.find_first_of(DirectorySeparatorChar);
 
@@ -142,7 +143,7 @@ FileEntryPointer MergedEntry::getChild(const string_type& path)
 		throw InvalidOperationException("Entry is no directory!");
 	}
 
-	return getEntryInternal(normalizePath(path, parentSystem->caseInsensitive));
+	return getEntryInternal(util::normalizePath(path, parentSystem->caseInsensitive));
 }
 
 size_t MergedEntry::numChildren()
@@ -179,7 +180,7 @@ void MergedEntry::listChildren(std::vector<FileEntryPointer>& outVector)
 
 boost::shared_ptr<std::streambuf> MergedEntry::open(int mode)
 {
-	int ops = modeToOperation(mode);
+	int ops = util::modeToOperation(mode);
 
 	if (!(parentSystem->supportedOperations() & ops))
 	{
@@ -255,7 +256,7 @@ bool MergedEntry::deleteChild(const string_type& name)
 		throw InvalidOperationException("Entry is no directory!");
 	}
 
-	string_type normalized = normalizePath(name);
+	string_type normalized = util::normalizePath(name);
 
 	// we want to delete the entry in the directory that actually contains it to keep
 	// recaching overhead as small as possible

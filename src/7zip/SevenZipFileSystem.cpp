@@ -14,6 +14,7 @@ extern "C"
 #include <utf8.h>
 
 #include "VFSPP/7zip.hpp"
+#include "VFSPP/util.hpp"
 
 using namespace vfspp;
 using namespace vfspp::sevenzip;
@@ -120,7 +121,7 @@ SevenZipFileSystem::SevenZipFileSystem(const boost::filesystem::path& path) :
 
 		utf8::utf16to8(tempBuf, tempBuf + written, std::back_inserter(utf8Name));
 
-		utf8Name = normalizePath(utf8Name);
+		utf8Name = util::normalizePath(utf8Name);
 
 		// Remove a trailing 0-char as that screws with the string
 		if (utf8Name[utf8Name.size() - 1] == 0)
@@ -128,7 +129,7 @@ SevenZipFileSystem::SevenZipFileSystem(const boost::filesystem::path& path) :
 			utf8Name.resize(utf8Name.size() - 1);
 		}
 
-		FileData fd;
+		SevenZipFileData fd;
 		fd.name = utf8Name;
 		fd.index = i;
 
@@ -179,8 +180,7 @@ SevenZipFileSystem::SevenZipFileSystem(const boost::filesystem::path& path) :
 			fd.type = DIRECTORY;
 		}
 
-		fileData.push_back(fd);
-		fileIndexes[utf8Name] = fileData.size() - 1;
+		addFileData(fd.name, fd);
 	}
 
 	delete[] folderUnpackSizes;
@@ -239,14 +239,12 @@ boost::shared_array<char> SevenZipFileSystem::extractEntry(const string_type& pa
 	size_t outSizeProcessed;
 	SRes res;
 
-	boost::unordered_map<string_type, int>::const_iterator iter = fileIndexes.find(path);
+	SevenZipFileData fd = getFileData(path);
 
-	if (iter == fileIndexes.end())
+	if (fd.type == UNKNOWN)
 	{
-		throw FileSystemException("Path does not exist in the archive!");
+		throw FileSystemException("Path is not known in this archive");
 	}
-
-	const FileData& fd = fileData[iter->second];
 
 	if (fd.type != FILE)
 	{

@@ -1,9 +1,9 @@
 
-#include <VFSPP/core.hpp>
+#include <VFSPP/util.hpp>
 
 #include <gtest/gtest.h>
 
-using namespace vfspp;
+using namespace vfspp::util;
 
 TEST(UtilityTest, NormalizePath)
 {

@@ -12,6 +12,7 @@ SET(VFS_HEADERS
 	"${VSFPP_INCLUDE_DIR}/VFSPP/core.hpp"
 	"${VSFPP_INCLUDE_DIR}/VFSPP/system.hpp"
 	"${VSFPP_INCLUDE_DIR}/VFSPP/merged.hpp"
+	"${VSFPP_INCLUDE_DIR}/VFSPP/util.hpp"
 	"${VSFPP_INCLUDE_DIR}/VFSPP/defines.hpp"
 	"${CMAKE_CURRENT_BINARY_DIR}/vfspp_export.h"
 	"${CMAKE_CURRENT_BINARY_DIR}/compiler.h"

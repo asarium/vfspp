@@ -10,6 +10,9 @@ extern "C"
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
 
+#include <boost/iostreams/stream_buffer.hpp>
+#include <boost/iostreams/device/array.hpp>
+
 using namespace vfspp;
 using namespace vfspp::sevenzip;
 
@@ -17,16 +20,16 @@ using namespace boost;
 
 namespace
 {
-	class MemoryBuffer : public std::basic_streambuf<char>
+	template<typename Ch>
+	class MemoryBuffer : public boost::iostreams::basic_array<Ch>
 	{
 	private:
 		// We keep this here so the data is deallocated when this object is deleted
-		boost::shared_array<char> dataPtr;
+		boost::shared_array<Ch> dataPtr;
 
 	public:
-		MemoryBuffer(shared_array<char> data, size_t n) : dataPtr(data)
+		MemoryBuffer(shared_array<Ch> data, size_t n) : dataPtr(data), boost::iostreams::basic_array<Ch>(data.get(), n)
 		{
-			setg(data.get(), data.get(), data.get() + n);
 		}
 	};
 }
@@ -65,7 +68,7 @@ size_t SevenZipFileEntry::numChildren()
 	}
 
 	size_t num = 0;
-	BOOST_FOREACH(const SevenZipFileSystem::FileData& data, parentSystem->fileData)
+	BOOST_FOREACH(const SevenZipFileData& data, parentSystem->fileData)
 	{
 		if (algorithm::starts_with(data.name, path))
 		{
@@ -102,7 +105,7 @@ void SevenZipFileEntry::listChildren(std::vector<FileEntryPointer>& outVector)
 
 	outVector.clear();
 
-	BOOST_FOREACH(const SevenZipFileSystem::FileData& data, parentSystem->fileData)
+	BOOST_FOREACH(const SevenZipFileData& data, parentSystem->fileData)
 	{
 		if (algorithm::starts_with(data.name, path))
 		{
@@ -141,16 +144,7 @@ EntryType SevenZipFileEntry::getEntryType(const string_type& path) const
 		return DIRECTORY;
 	}
 
-	boost::unordered_map<string_type, int>::const_iterator iter = parentSystem->fileIndexes.find(path);
-
-	if (iter == parentSystem->fileIndexes.end())
-	{
-		return UNKNOWN;
-	}
-	else
-	{
-		return parentSystem->fileData[iter->second].type;
-	}
+	return parentSystem->getFileData(path).type;
 }
 
 bool SevenZipFileEntry::deleteChild(const string_type& name)
@@ -183,7 +177,7 @@ boost::shared_ptr<std::streambuf> SevenZipFileEntry::open(int mode)
 	size_t size;
 	shared_array<char> data = parentSystem->extractEntry(path, size);
 
-	return shared_ptr<std::streambuf>(new MemoryBuffer(data, size));
+	return shared_ptr<std::streambuf>(new boost::iostreams::stream_buffer<MemoryBuffer<char>>(MemoryBuffer<char>(data, size)));
 }
 
 void SevenZipFileEntry::rename(const string_type& newPath)
@@ -193,14 +187,5 @@ void SevenZipFileEntry::rename(const string_type& newPath)
 
 time_t SevenZipFileEntry::lastWriteTime()
 {
-	boost::unordered_map<string_type, int>::const_iterator iter = parentSystem->fileIndexes.find(path);
-
-	if (iter == parentSystem->fileIndexes.end())
-	{
-		return 0;
-	}
-	else
-	{
-		return parentSystem->fileData[iter->second].write_time;
-	}
+	return parentSystem->getFileData(path).write_time;
 }
