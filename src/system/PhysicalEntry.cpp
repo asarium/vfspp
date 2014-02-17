@@ -246,13 +246,13 @@ FileEntryPointer PhysicalEntry::createEntry(EntryType type, const string_type& n
 		switch (type)
 		{
 		case FILE:
-			if (!is_regular_file(entryPath))
+			if (!is_regular_file(createPath))
 			{
 				throw InvalidOperationException("Path exists but is no file!");
 			}
 			break;
 		case DIRECTORY:
-			if (!is_directory(entryPath))
+			if (!is_directory(createPath))
 			{
 				throw InvalidOperationException("Path exists but is no directory!");
 			}
