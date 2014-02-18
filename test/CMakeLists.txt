@@ -23,6 +23,7 @@ SET(TEST_SRCS
 	system/directory.cpp
 	system/file.cpp
 	merged/merged.cpp
+	memory/memory.cpp
 )
 
 source_group(System REGULAR_EXPRESSION system/.*)
@@ -30,6 +31,8 @@ source_group(System REGULAR_EXPRESSION system/.*)
 source_group(Core REGULAR_EXPRESSION core/.*)
 
 source_group(Merged REGULAR_EXPRESSION merged/.*)
+
+source_group(Memory REGULAR_EXPRESSION memory/.*)
 
 if(VFSPP_7ZIP_SUPPORT)
 	SET(TEST_SRCS

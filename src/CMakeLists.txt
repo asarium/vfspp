@@ -12,6 +12,7 @@ SET(VFS_HEADERS
 	"${VSFPP_INCLUDE_DIR}/VFSPP/core.hpp"
 	"${VSFPP_INCLUDE_DIR}/VFSPP/system.hpp"
 	"${VSFPP_INCLUDE_DIR}/VFSPP/merged.hpp"
+	"${VSFPP_INCLUDE_DIR}/VFSPP/memory.hpp"
 	"${VSFPP_INCLUDE_DIR}/VFSPP/util.hpp"
 	"${VSFPP_INCLUDE_DIR}/VFSPP/defines.hpp"
 	"${CMAKE_CURRENT_BINARY_DIR}/vfspp_export.h"
@@ -25,11 +26,15 @@ SET(VFS_SRC
 	system/PhysicalFileSystem.cpp
 	merged/MergedEntry.cpp
 	merged/MergedFileSystem.cpp
+	memory/MemoryFileSystem.cpp
+	memory/MemoryFileEntry.cpp
 )
 
 source_group(System REGULAR_EXPRESSION system/.*)
 
 source_group(Merged REGULAR_EXPRESSION merged/.*)
+
+source_group(Memory REGULAR_EXPRESSION memory/.*)
 
 source_group(External\\UTF8 FILES ${UTF8_HEADERS})
 
