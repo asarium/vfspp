@@ -77,7 +77,12 @@ SevenZipFileSystem::SevenZipFileSystem(const boost::filesystem::path& path) :
 
 	SzArEx_Init(&db);
 
-	WRes wres = InFile_Open(&archiveStream.file, path.string().c_str());
+#ifdef WIN32
+	WRes wres = InFile_OpenW(&archiveStream.file, path.c_str());
+#else
+	WRes wres = InFile_Open(&archiveStream.file, path.c_str());
+#endif
+
 	if (wres)
 	{
 		boost::system::error_code e(wres, boost::system::get_system_category());
