@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/unordered_map.hpp>
+#include <boost/thread/mutex.hpp>
 
 #include "VFSPP/core.hpp"
 
@@ -20,6 +21,8 @@ namespace vfspp
 			boost::unordered_map<string_type, boost::shared_ptr<MergedEntry> > cachedChildMapping;
 
 			bool dirty;
+
+			boost::mutex childrenLock;
 
 			void cacheChildren();
 

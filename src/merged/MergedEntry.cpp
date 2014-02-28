@@ -1,6 +1,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
+#include <boost/thread/lock_guard.hpp>
 
 #include "VFSPP/merged.hpp"
 #include "VFSPP/util.hpp"
@@ -77,6 +78,13 @@ void MergedEntry::addChildren(IFileSystemEntry* entry)
 
 void MergedEntry::cacheChildren()
 {
+	boost::lock_guard<boost::mutex> lock(childrenLock);
+
+	if (!dirty)
+	{
+		return;
+	}
+
 	cachedChildEntries.clear();
 	cachedChildMapping.clear();
 
