@@ -307,6 +307,11 @@ bool MergedEntry::deleteChild(const string_type& name)
 		}
 	}
 
+	if (success)
+	{
+		dirty = true;
+	}
+
 	return success;
 }
 
@@ -336,6 +341,8 @@ FileEntryPointer MergedEntry::createEntry(EntryType type, const string_type& nam
 
 					if (newEntry)
 					{
+						dirty = true;
+
 						// Stop if we have sucessfully created an entry
 						return shared_ptr<MergedEntry>(new MergedEntry(parentSystem, newEntry));
 					}
