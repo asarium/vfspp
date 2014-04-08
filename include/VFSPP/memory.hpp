@@ -71,7 +71,9 @@ namespace vfspp
 			
 			virtual MemoryFileEntry* getRootEntry() VFSPP_OVERRIDE { return rootEntry.get(); }
 
-			virtual int supportedOperations() const VFSPP_OVERRIDE { return OP_READ; }
+			virtual int supportedOperations() const VFSPP_OVERRIDE{ return OP_READ; }
+
+			virtual string_type getName() const { return "Memory filesystem"; };
 		};
 	}
 }
