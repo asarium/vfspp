@@ -5,6 +5,8 @@
 
 #include <boost/unordered_map.hpp>
 
+#include <boost/filesystem/path.hpp>
+
 namespace vfspp
 {
 	namespace util
@@ -34,7 +36,7 @@ namespace vfspp
 		class VFSPP_EXPORT ArchiveFileSystem : public IFileSystem
 		{
 		public:
-			ArchiveFileSystem() {}
+			ArchiveFileSystem(const boost::filesystem::path& filePathIn) : filePath(filePathIn) {}
 
 			virtual ~ArchiveFileSystem() {}
 
@@ -42,8 +44,12 @@ namespace vfspp
 
 			virtual int supportedOperations() const = 0;
 
+			virtual string_type getName() const { return filePath.string(); }
+
 		protected:
 			typedef DataType data_type;
+
+			boost::filesystem::path filePath;
 			
 			std::vector<data_type> fileData;
 			boost::unordered_map<string_type, size_t> fileIndexes;

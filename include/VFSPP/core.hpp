@@ -113,5 +113,7 @@ namespace vfspp
 		virtual IFileSystemEntry* getRootEntry() = 0;
 
 		virtual int supportedOperations() const = 0;
+
+		virtual string_type getName() const = 0;
 	};
 }

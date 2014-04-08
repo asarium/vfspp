@@ -73,6 +73,8 @@ namespace vfspp {
 			{
 				return operations;
 			}
+
+			virtual string_type getName() const { return physicalRoot.string(); }
 		};
 	}
 }

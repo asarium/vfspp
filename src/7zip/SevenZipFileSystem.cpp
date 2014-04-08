@@ -58,7 +58,7 @@ namespace
 }
 
 SevenZipFileSystem::SevenZipFileSystem(const boost::filesystem::path& path) :
-	filePath(path),
+	ArchiveFileSystem(path),
 	tempBuf(NULL),
 	tempBufSize(0),
 	blockIndex(0xFFFFFFFF),

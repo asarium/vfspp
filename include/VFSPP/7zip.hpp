@@ -68,9 +68,6 @@ namespace vfspp {
 		class VFSPP_EXPORT SevenZipFileSystem : public util::ArchiveFileSystem<SevenZipFileData>
 		{
 		private:
-
-			boost::filesystem::path filePath;
-
 			// Extract variables
 			UInt32 blockIndex;
 			Byte* outBuffer;

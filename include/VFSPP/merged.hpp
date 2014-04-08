@@ -86,6 +86,8 @@ namespace vfspp
 
 			void setCaseInsensitive(bool b) { caseInsensitive = b; }
 
+			virtual string_type getName() const { return "Merged file system"; }
+
 			friend class MergedEntry;
 		};
 	}
