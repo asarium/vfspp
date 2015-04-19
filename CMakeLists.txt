@@ -2,6 +2,11 @@
 cmake_minimum_required(VERSION 2.8)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+# Set a few policies
+cmake_policy(SET CMP0051 OLD)
+cmake_policy(SET CMP0053 NEW)
+cmake_policy(SET CMP0054 NEW)
+
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 PROJECT(VFSPP)
