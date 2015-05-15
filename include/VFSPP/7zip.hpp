@@ -2,7 +2,7 @@
 
 #include "vfspp_export.h"
 
-#include "VFSPP/defines.hpp"
+#include "vfspp_compiler_detection.h"
 #include "VFSPP/core.hpp"
 #include "VFSPP/util.hpp"
 
