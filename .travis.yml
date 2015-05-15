@@ -18,7 +18,7 @@ install:
 before_script:
   - mkdir -p travis-build
   - cd travis-build
-  - $HOME/cmake/bin/cmake -G "$GENERATOR" -DCMAKE_BUILD_TYPE=$BUILD_TYPE ..
+  - $HOME/cmake/bin/cmake -G "$GENERATOR" -DVFSPP_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=$BUILD_TYPE ..
 script:
   - $HOME/cmake/bin/cmake --build .
   - $HOME/cmake/bin/cmake --build . --target run_tests
