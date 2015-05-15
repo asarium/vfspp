@@ -1,6 +1,4 @@
 
-include(compiler_checks)
-
 SET(UTF8_HEADERS
 	"${UTF8_INCLUDE_DIR}/utf8.h"
 	"${UTF8_INCLUDE_DIR}/utf8/checked.h"
@@ -14,9 +12,8 @@ SET(VFS_HEADERS
 	"${VSFPP_INCLUDE_DIR}/VFSPP/merged.hpp"
 	"${VSFPP_INCLUDE_DIR}/VFSPP/memory.hpp"
 	"${VSFPP_INCLUDE_DIR}/VFSPP/util.hpp"
-	"${VSFPP_INCLUDE_DIR}/VFSPP/defines.hpp"
 	"${CMAKE_CURRENT_BINARY_DIR}/vfspp_export.h"
-	"${CMAKE_CURRENT_BINARY_DIR}/compiler.h"
+	"${CMAKE_CURRENT_BINARY_DIR}/vfspp_compiler_detection.h"
 	${UTF8_HEADERS}
 )
 
@@ -74,11 +71,8 @@ ADD_LIBRARY(VFSPP ${LIB_TYPE} ${VFS_SRC} ${VFS_HEADERS})
 generate_export_header(VFSPP)
 
 SET(INCLUDE_DIRS ${VSFPP_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${Boost_INCLUDE_DIRS})
-set_target_properties(VFSPP
-	PROPERTIES
-		INCLUDE_DIRECTORIES "${INCLUDE_DIRS};${UTF8_INCLUDE_DIR}"
-		INTERFACE_INCLUDE_DIRECTORIES "${INCLUDE_DIRS}"
-)
+target_include_directories(VFSPP PUBLIC ${INCLUDE_DIRS})
+target_include_directories(VFSPP PRIVATE ${UTF8_INCLUDE_DIR})
 
 SET(COMPILE_DEFS BOOST_ALL_NO_LIB)
 IF(NOT VFSPP_BUILD_SHARED)
@@ -90,21 +84,22 @@ IF(MSVC)
 	SET(COMPILE_DEFS ${COMPILE_DEFS} _SCL_SECURE_NO_WARNINGS)
 ENDIF(MSVC)
 
-set_target_properties(VFSPP
-	PROPERTIES
-		COMPILE_DEFINITIONS "${COMPILE_DEFS}"
-		INTERFACE_COMPILE_DEFINITIONS "${COMPILE_DEFS}"
-)
+target_compile_definitions(VFSPP PUBLIC ${COMPILE_DEFS})
 
 target_link_libraries(VFSPP ${Boost_LIBRARIES})
 
-if (NOT VFSPP_NO_INSTALL)
-	INSTALL(TARGETS VFSPP
-			ARCHIVE DESTINATION lib
-			LIBRARY DESTINATION lib
-			RUNTIME DESTINATION bin)
+include(WriteCompilerDetectionHeader)
 
-	install(DIRECTORY "${VSFPP_INCLUDE_DIR}" DESTINATION include)
+set(REQUIRED_FEATURES)
+set(OPTIONAL_FEATURES cxx_variadic_templates cxx_constexpr cxx_deleted_functions
+    cxx_final cxx_noexcept cxx_override cxx_alignas cxx_alignof cxx_static_assert
+    cxx_attribute_deprecated cxx_thread_local)
 
-	install(FILES "${CMAKE_CURRENT_BINARY_DIR}/vfspp_export.h" DESTINATION include)
-endif(NOT VFSPP_NO_INSTALL)
+target_compile_features(VFSPP PUBLIC ${REQUIRED_FEATURES})
+
+write_compiler_detection_header(
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/vfspp_compiler_detection.h"
+  PREFIX VFSPP
+  COMPILERS AppleClang Clang GNU MSVC
+  FEATURES ${OPTIONAL_FEATURES}
+)

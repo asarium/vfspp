@@ -6,7 +6,7 @@
 #include <boost/smart_ptr.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include "VFSPP/defines.hpp"
+#include "vfspp_compiler_detection.h"
 #include "vfspp_export.h"
 
 namespace vfspp

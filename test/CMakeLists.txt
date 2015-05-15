@@ -39,7 +39,7 @@ if(VFSPP_7ZIP_SUPPORT)
 		${TEST_SRCS}
 		7zip/7zip.cpp
 	)
-	
+
 	source_group(7zip REGULAR_EXPRESSION 7zip/.*)
 endif(VFSPP_7ZIP_SUPPORT)
 
@@ -47,13 +47,7 @@ add_executable(gtests ${TEST_SRCS})
 target_link_libraries(gtests gtest_main gtest VFSPP)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-add_custom_target(test gtests COMMENT "Running tests")
-
 set_target_properties(gtests
-	PROPERTIES
-		FOLDER "test"
-)
-set_target_properties(test
 	PROPERTIES
 		FOLDER "test"
 )

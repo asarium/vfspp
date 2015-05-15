@@ -1,4 +1,0 @@
-#pragma once
-
-#cmakedefine HAS_CXX11_OVERRIDE
-
