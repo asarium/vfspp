@@ -90,7 +90,7 @@ target_link_libraries(VFSPP ${Boost_LIBRARIES})
 
 include(WriteCompilerDetectionHeader)
 
-set(REQUIRED_FEATURES)
+set(REQUIRED_FEATURES cxx_nullptr)
 set(OPTIONAL_FEATURES cxx_variadic_templates cxx_constexpr cxx_deleted_functions
     cxx_final cxx_noexcept cxx_override cxx_alignas cxx_alignof cxx_static_assert
     cxx_attribute_deprecated cxx_thread_local)
