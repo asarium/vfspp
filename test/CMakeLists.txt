@@ -5,6 +5,16 @@ endif(MSVC)
 
 add_subdirectory(gtest-1.7.0)
 
+set_target_properties(gtest
+	PROPERTIES
+		FOLDER "test\\gtest"
+)
+
+set_target_properties(gtest_main
+	PROPERTIES
+		FOLDER "test\\gtest"
+)
+
 # This keeps boost from automatically including the filesystem libs
 add_definitions(-DBOOST_ALL_NO_LIB)
 
@@ -46,6 +56,8 @@ endif(VFSPP_7ZIP_SUPPORT)
 add_executable(gtests ${TEST_SRCS})
 target_link_libraries(gtests gtest_main gtest VFSPP)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+add_custom_target(run_tests gtests COMMENT "Running tests")
 
 set_target_properties(gtests
 	PROPERTIES

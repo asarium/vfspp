@@ -21,3 +21,4 @@ before_script:
   - $HOME/cmake/bin/cmake -G "$GENERATOR" -DCMAKE_BUILD_TYPE=$BUILD_TYPE ..
 script:
   - $HOME/cmake/bin/cmake --build .
+  - $HOME/cmake/bin/cmake --build . --target run_tests
