@@ -11,10 +11,10 @@ namespace vfspp
 {
 	namespace util
 	{
-		template<class T>
-		T normalizePath(const T& inPath, bool lowerCase = false)
+		template<class InType, class OutType = InType>
+		OutType normalizePath(const InType& inPath, bool lowerCase = false)
 		{
-			T outPath(inPath);
+			OutType outPath(inPath);
 
 			boost::trim(outPath);
 
@@ -26,6 +26,11 @@ namespace vfspp
 			}
 
 			return outPath;
+		}
+
+		inline string_type normalizePath(const char* inPath, bool lowerCase = false)
+		{
+			return normalizePath<const char*, string_type>(inPath, lowerCase);
 		}
 
 		int modeToOperation(int mode);
