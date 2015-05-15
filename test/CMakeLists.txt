@@ -57,7 +57,7 @@ add_executable(gtests ${TEST_SRCS})
 target_link_libraries(gtests gtest_main gtest VFSPP)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-add_custom_target(run_tests gtests COMMENT "Running tests")
+add_custom_target(run_tests COMMAND gtests COMMENT "Running tests")
 
 set_target_properties(gtests
 	PROPERTIES
